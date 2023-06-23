@@ -325,6 +325,10 @@ impl Request {
             ll::Operation::Exchange { arg, oldname, newname } => {
                 se.filesystem.exchange(req, arg.olddir, &oldname, arg.newdir, &newname, arg.options, req.reply()).await;
             }
+
+            ll::Operation::Unknown { } => {
+                self.reply::<ReplyEmpty>().error(ENOSYS);
+            }
         }
     }
 
