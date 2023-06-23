@@ -198,6 +198,7 @@ pub enum Operation {
     // CuseInit {
     //     arg: fuse_init_in,
     // },
+    Unknown {},
 }
 
 impl<'a> fmt::Display for Operation {
@@ -251,6 +252,7 @@ impl<'a> fmt::Display for Operation {
             Operation::GetXTimes => write!(f, "GETXTIMES"),
             #[cfg(target_os = "macos")]
             Operation::Exchange { arg, oldname, newname } => write!(f, "EXCHANGE olddir {:#018x}, oldname {:?}, newdir {:#018x}, newname {:?}, options {:#x}", arg.olddir, oldname, arg.newdir, newname, arg.options),
+            Operation::Unknown {} => write!(f, "UNKNOWN returning ENOSYS")
         }
     }
 }
@@ -350,6 +352,8 @@ impl Operation {
                     oldname: data.fetch_str()?.into(),
                     newname: data.fetch_str()?.into(),
                 },
+                fuse_opcode::FUSE_UNKNOWN => Operation::Unknown {
+                }
             })
         }
     }
